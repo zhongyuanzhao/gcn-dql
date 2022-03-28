@@ -26,36 +26,9 @@ header_soj = ['Config', 'n', 'f', 't', 'load','q_med', 'q_95', 'q_avg', 'd_avg',
               'run', 'ratio', 'e']
 
 
-result_dir = './output/star_graph'
-csvfiles = os.listdir(result_dir)
-print("{} files".format(len(csvfiles)))
-
 padr = pd.read_csv('./wireless/graph_centrality.csv', index_col='graph')
 padr = padr["PADR"]
 
-dict_csv_l1 = {
-    "Star30": "./output/star_graph/star_30_nodes.out",
-    "Star20": "./output/star_graph/star_21_nodes.out",
-    "Star10": "./output/star_graph/star_11_nodes.out",
-    "BA-m1": "./output/star_graph/ba_70_nodes_1_m.out",
-    "BA-m2": "./output/star_graph/ba_70_nodes_2_m.out",
-    "Tree": "./output/star_graph/tree_50_nodes_gamma_3_2nd.out",
-    "ER": "./output/star_graph/er_50_nodes_10_np.out",
-    # "poisson": "",
-    "BA-mix": "./output/star_graph/ba_150_nodes.out"
-}
-
-# dict_out_l1 = {
-#     "Star30": "./wireless/star30_0.07_l1_GCNBP2_test.out",
-#     "Star20": "./wireless/star20_0.07_l1_GCNBP2_test.out",
-#     "Star10": "./wireless/star10_0.07_l1_GCNBP2_test.out",
-#     "BA-m1": "./wireless/ba1_0.07_l1_GCNBP2_test.out",
-#     "BA-m2": "./wireless/ba2_0.07_l1_GCNBP2_test.out",
-#     "Tree": "./wireless/tree_0.07_l1_GCNBP2_test.out",
-#     "ER": "./wireless/er_0.07_l1_GCNBP2_test.out",
-#     # "poisson": "./wireless/poisson_0.07_l1_GCNBP2_test.out",
-#     "BA-mix": "./wireless/bamix_0.07_l1_GCNBP2_test.out"
-# }
 
 dict_out_l1 = {
     "Star30": "./wireless/star30_0.07_l1_GCNBP2_qr_test.out",
@@ -70,31 +43,6 @@ dict_out_l1 = {
     "BA-mix": "./wireless/bamix_0.07_l1_GCNBP2_qr_test.out"
 }
 
-dict_soj_l1 = {
-    "Star30": "./wireless/star30_0.07_l1_BAERsr_sr_test.out",
-    "Star20": "./wireless/star20_0.07_l1_BAERsr_sr_test.out",
-    "Star10": "./wireless/star10_0.07_l1_BAERsr_sr_test.out",
-    "BA-m1": "./wireless/ba1_0.07_l1_BAERsr_sr_test.out",
-    "BA-m2": "./wireless/ba2_0.07_l1_BAERsr_sr_test.out",
-    "Tree": "./wireless/tree_0.07_l1_BAERsr_sr_test.out",
-    # "Tree": "./wireless/tree-line_0.07_l1_BAERsr_sr_test.out",
-    "ER": "./wireless/er_0.07_l1_BAERsr_sr_test.out",
-    # "poisson": "./wireless/poisson_0.07_l1_GCNBP2_test.out",
-    "BA-mix": "./wireless/bamix_0.07_l1_BAERsr_sr_test.out"
-}
-
-
-dict_csv_l5 = {
-    "Star30": "",
-    "Star20": "",
-    "Star10": "",
-    "BA-m1": "./output/star_graph/ba_70_nodes_1_m_gcn(5).out",
-    "BA-m2": "./output/star_graph/ba_70_nodes_2_m_gcn(5).out",
-    "Tree": "",
-    "ER": "./output/star_graph/er_50_nodes_10_np_gcn(5).out",
-    "Poisson": "",
-    "BA-mix": ""
-}
 
 dict_df = {}
 results = {}
@@ -103,7 +51,6 @@ for item in ['q_med', 'q_95', 'q_avg','u_gcn']:
     for key in dict_out_l1:
         fullpath = dict_out_l1[key]
         file = fullpath.split('/')[-1]
-        # fullpath = os.path.join(result_dir, file)
         if file.endswith(".out"):
             print(fullpath)
         else:
@@ -122,44 +69,18 @@ for item in ['q_med', 'q_95', 'q_avg','u_gcn']:
         df_tmp = df_tmp.append(df_item)
     dict_df[item] = df_tmp
 
-for item in ['sj_med', 'sj_95p', 'sj_avg']:
-    df_tmp = pd.DataFrame({item: [], 'graph': [], 'PADR': [], 'baseline': []})
-    for key in dict_soj_l1:
-        fullpath = dict_soj_l1[key]
-        file = fullpath.split('/')[-1]
-        # fullpath = os.path.join(result_dir, file)
-        if file.endswith(".out"):
-            print(fullpath)
-        else:
-            continue
-
-        df = pd.read_csv(fullpath, header=None)
-        df.columns = header_soj
-        for col in header_soj[4:]:
-            df[col] = pd.to_numeric(df[col].str.replace('s','').str.split(' ').str[-1], errors='coerce')
-        results[fullpath] = df
-        df_item = pd.DataFrame([])
-        df_item[item] = df[item]
-        df_item['graph'] = "{}\n{}".format(key, padr[key])
-        df_item['PADR'] = padr[key]
-        df_item['baseline'] = 'sojourn'
-        df_tmp = df_tmp.append(df_item)
-    dict_df[item] = df_tmp
-
-
 fig, axs = plt.subplots(3, 1, sharex='all', figsize=(6, 6))
 
-# toplot = ['q_95', 'q_med', 'q_avg', 'u_gcn']
-toplot = ['q_95', 'q_med', 'q_avg', 'sj_95p', 'sj_med', 'sj_avg']
+toplot = ['q_95', 'q_med', 'q_avg', 'u_gcn']
 xlabels = []
 padr = padr.sort_values()
 for index, val in padr.items():
-    if index in dict_csv_l1.keys():
+    if index in dict_out_l1.keys():
         xlabels.append("{}\n{}".format(index, val))
 
 plotitems = ['$95^{th}$', 'Median', 'Mean']
 ylims = [[], [], []]
-for i in range(6):
+for i in range(3):
     item = toplot[i]
     df_tmp = dict_df[item]
     ax = axs[i%3]
@@ -171,12 +92,8 @@ for i in range(6):
                              color=dict(boxes='b', whiskers='k', medians='r', caps='k'),
                              showmeans=True, return_type='dict',
                              widths=0.3, positions=np.arange(1, 9) + x_offset)
-    # boxplot = df_tmp.boxplot(column=[item], by=['PADR', 'baseline'], rot=0, ax=ax,
-    #                          color=dict(boxes='b', whiskers='k', medians='r', caps='k'),
-    #                          showmeans=True, return_type='dict')
     ax.set_title('')
     ax.set_ylabel(r'AR ({})'.format(plotitems[i%3]), fontsize=12)
-    # boxplot.set_xlabel('Topology')
     ax.set_xlabel('')
     ax.set_xticks(list(range(1, 9)))
     ax.set_xticklabels(xlabels, fontsize=12)
@@ -213,7 +130,7 @@ plt.close(fig)
 df_load = pd.DataFrame({'seed':[],'load':[],'graph':[],'q_med':[], 'q_95':[], 'q_avg':[],'u_gcn':[]})
 num_layer = 1
 
-for graph in ['star20', 'star10', 'ba1', 'ba2', 'tree-line', 'er']:
+for graph in ['star20', 'star10', 'ba1', 'ba2', 'tree', 'er']:
     for load in np.arange(0.01, 0.09, 0.01):
         file = 'metric_vs_load_summary_1-channel_utility-qr_opt-0_graph-{}_load-{:.2f}_layer-{}_test.csv'.format(graph, load, num_layer)
         fullpath = os.path.join('./wireless/', file)
@@ -228,22 +145,14 @@ for graph in ['star20', 'star10', 'ba1', 'ba2', 'tree-line', 'er']:
         df_out['q_avg'] = df_gcn['avg_queue_len']/df_greedy['avg_queue_len']
         df_out['u_gcn'] = df_gcn['avg_utility']/df_greedy['avg_utility']
         df_out.reset_index(drop=True, inplace=True)
-        # df_out.rename({'graph': 'index'}, inplace=True)
         df_out['graph'] = graph
         df_load = df_load.append(df_out, ignore_index=True)
 
 for item in ['q_avg', 'q_med']:
     fig = plt.figure(figsize=(5, 3))
     ax = sns.lineplot(data=df_load, x="load", y=item, hue="graph", style='graph', markers=True) # ['.','+','*','x','o','^']
-    # ax.set_axis_labels("x: Approx. Ratio of Throughput", "F(x)")
     ax.set_xlabel("x: traffic load", fontsize=12)
     ax.set_ylabel("Approx. Ratio to LGS", fontsize=12)
-    # ax.xaxis.set_major_locator(MultipleLocator(0.02))
-    # ax.set_xticks(np.arange(0.86, 1.01, 0.02))
-    # ax.set_xlim([0.86,1.0])
-    # ax.set_yticks(np.arange(0.0, 1.01, 0.2))
-    # ax.xaxis.set_minor_locator(AutoMinorLocator())
-    # ax.xaxis.set_minor_locator(MultipleLocator(2))
     ax.grid('both')
     ax.legend(['Star20', 'Star10', 'BA-m1', 'BA-m2', 'Tree', 'ER'])
     plt.tight_layout(pad=0.1)
