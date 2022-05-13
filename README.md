@@ -1,8 +1,20 @@
 # Delay-Oriented Distributed Scheduling using Graph Neural Networks
 
-work submitted to IEEE ICASSP 2022
+Z. Zhao, G. Verma, A. Swami and S. Segarra, "Delay-Oriented Distributed Scheduling Using Graph Neural Networks," ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), 2022, pp. 8902-8906, doi: 10.1109/ICASSP43922.2022.9746926.
 
 arXiv <https://arxiv.org/abs/2111.07017>
+
+```text
+@INPROCEEDINGS{zhao2022delay,
+  author={Zhao, Zhongyuan and Verma, Gunjan and Swami, Ananthram and Segarra, Santiago},
+  booktitle={ICASSP 2022 - 2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 
+  title={Delay-Oriented Distributed Scheduling Using Graph Neural Networks}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={8902-8906},
+  doi={10.1109/ICASSP43922.2022.9746926}}
+```
 
 
 ## Major finding
